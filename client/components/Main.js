@@ -10,7 +10,7 @@ export default class Main extends Component {
     return (
       <div>
         <Sidebar />
-        <Navbar />
+        <Navbar messages={MessagesList}/>
         <main>
           <Switch>
             <Route path="/channels/:channelId" component={MessagesList} />

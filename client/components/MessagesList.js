@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Message from './Message';
 import NewMessageEntry from './NewMessageEntry';
 import axios from 'axios';
-import store, {gotMessagesFromServer} from '../store'
+import store, {fetchMessages} from '../store'
 
 export default class MessagesList extends Component {
 
@@ -13,12 +13,8 @@ export default class MessagesList extends Component {
   }
 
   componentDidMount () {
-    axios.get('/api/messages')
-      .then(res => res.data)
-      //changes the store state
-      .then(messages => store.dispatch(gotMessagesFromServer(messages)))
-      //assigning store state to local state
-      this.unsubscribe = store.subscribe(() => this.setState(store.getState()))
+    this.unsubscribe = store.subscribe(() => this.setState(store.getState()))
+    store.dispatch(fetchMessages())
   }
   componentWillUnmount() {
     this.unsubscribe()

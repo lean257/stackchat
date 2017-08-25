@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import store, {gotMessagesFromServer} from '../store';
+import store, {fetchMessages} from '../store';
 import axios from 'axios'
 
 // These values are all hardcoded...for now!
@@ -15,13 +15,12 @@ export default class ChannelList extends Component {
     super();
     //local state pertaining to ChannelsList
     this.state = store.getState();
+    this.rows = []
   }
-  
   componentDidMount(){
-    axios.get('/api/messages')
-      .then(res => res.data)
-      //changes the store state
-      .then(messages => store.dispatch(gotMessagesFromServer(messages)))
+    store.dispatch(fetchMessages())
+    axios.get('/api/channels')
+    .then(res => res.data.forEach(row => this.rows.push(row.id)))
     //assigning store state to local state
     this.unsubscribe = store.subscribe(() => this.setState(store.getState()))
   }
@@ -32,30 +31,33 @@ export default class ChannelList extends Component {
 
   render () {
     let messages = this.state.messages
+    console.log('rows', this.rows[0])
     return (
       <ul>
         <li>
-          <NavLink to={RANDOM_CHANNEL} activeClassName="active">
+          <NavLink
+            to={`/channels/${this.rows[0]}`}
+            activeClassName="active">
             <span># really_random</span>
-            <span className="badge">{messages.filter(message => message.channelId === 1).length}</span>
+            <span className="badge">{messages.filter(message => message.channelId === this.rows[0]).length}</span>
           </NavLink>
         </li>
         <li>
           <NavLink to={GENERAL_CHANNEL} activeClassName="active">
             <span># generally_speaking</span>
-            <span className="badge">0</span>
+            <span className="badge">{messages.filter(message => message.channelId === 2).length}</span>
           </NavLink>
         </li>
         <li>
           <NavLink to={DOGS_CHANNEL} activeClassName="active">
             <span># dogs_of_fullstack</span>
-            <span className="badge">0</span>
+            <span className="badge">{messages.filter(message => message.channelId === 3).length}</span>
           </NavLink>
         </li>
         <li>
           <NavLink to={LUNCH_CHANNEL} activeClassName="active">
             <span># lunch_planning</span>
-            <span className="badge">0</span>
+            <span className="badge">{messages.filter(message => message.channelId === 4).length}</span>
           </NavLink>
         </li>
       </ul>
