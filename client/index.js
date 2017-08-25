@@ -8,6 +8,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Main } from './components';
+import store, {gotMessagesFromServer} from './store'
 
 ReactDOM.render(
   <Router>

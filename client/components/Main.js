@@ -14,6 +14,7 @@ export default class Main extends Component {
         <main>
           <Switch>
             <Route path="/channels/:channelId" component={MessagesList} />
+            //home page
             <Redirect to="/channels/1" />
           </Switch>
         </main>
