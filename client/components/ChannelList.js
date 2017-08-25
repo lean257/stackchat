@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import store, {gotMessagesFromServer} from '../store';
+import axios from 'axios'
 
 // These values are all hardcoded...for now!
 // Soon, we'll fetch them from the server!
@@ -9,14 +11,33 @@ const DOGS_CHANNEL = '/channels/3';
 const LUNCH_CHANNEL = '/channels/4';
 
 export default class ChannelList extends Component {
+  constructor () {
+    super();
+    //local state pertaining to ChannelsList
+    this.state = store.getState();
+  }
+  
+  componentDidMount(){
+    axios.get('/api/messages')
+      .then(res => res.data)
+      //changes the store state
+      .then(messages => store.dispatch(gotMessagesFromServer(messages)))
+    //assigning store state to local state
+    this.unsubscribe = store.subscribe(() => this.setState(store.getState()))
+  }
+
+  componentWillUnmount(){
+    this.unsubscribe();
+  }
 
   render () {
+    let messages = this.state.messages
     return (
       <ul>
         <li>
           <NavLink to={RANDOM_CHANNEL} activeClassName="active">
             <span># really_random</span>
-            <span className="badge">0</span>
+            <span className="badge">{messages.filter(message => message.channelId === 1).length}</span>
           </NavLink>
         </li>
         <li>
